@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { InputPanel } from './components/InputPanel';
 import { OutputPanel } from './components/OutputPanel';
+import { TemplateSelector } from './components/TemplateSelector';
+import { SectionOrderModal } from './components/SectionOrderModal';
 import { parseCV } from './utils/parser';
 import { generateLatex } from './utils/latexGenerator';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useTheme } from './hooks/useTheme';
 import { SAMPLE_CV } from './data/sampleCV';
-import type { ParsedCV } from './types/cv';
+import { DEFAULT_SECTION_ORDER } from './templates';
+import type { ParsedCV, SectionType } from './types/cv';
 
 interface ParsingWarning {
   type: 'info' | 'warning';
@@ -20,6 +23,10 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [warnings, setWarnings] = useState<ParsingWarning[]>([]);
   const [showWarnings, setShowWarnings] = useState(false);
+  const [templateId, setTemplateId] = useLocalStorage('cv2latex-template', 'professional');
+  const [sectionOrder, setSectionOrder] = useLocalStorage<SectionType[]>('cv2latex-section-order', DEFAULT_SECTION_ORDER);
+  const [showSectionModal, setShowSectionModal] = useState(false);
+  const [lastParsedCV, setLastParsedCV] = useState<ParsedCV | null>(null);
   const { theme, setTheme } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -66,8 +73,9 @@ function App() {
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       const parsed = parseCV(input);
-      const latex = generateLatex(parsed);
+      const latex = generateLatex(parsed, templateId, sectionOrder);
       setOutput(latex);
+      setLastParsedCV(parsed);
 
       const newWarnings = analyzeCV(parsed, input);
       setWarnings(newWarnings);
@@ -80,7 +88,7 @@ function App() {
     } finally {
       setIsConverting(false);
     }
-  }, [input, analyzeCV]);
+  }, [input, templateId, sectionOrder, analyzeCV]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -174,6 +182,19 @@ function App() {
               </p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
+              <TemplateSelector value={templateId} onChange={setTemplateId} />
+
+              <button
+                onClick={() => setShowSectionModal(true)}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                title="Reorder sections"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <span className="hidden lg:inline">Reorder</span>
+              </button>
+
               <button
                 onClick={cycleTheme}
                 className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
@@ -308,6 +329,14 @@ function App() {
           </p>
         </div>
       </footer>
+
+      <SectionOrderModal
+        isOpen={showSectionModal}
+        onClose={() => setShowSectionModal(false)}
+        sectionOrder={sectionOrder}
+        onSave={setSectionOrder}
+        parsedCV={lastParsedCV}
+      />
     </div>
   );
 }

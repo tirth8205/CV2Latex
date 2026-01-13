@@ -1,5 +1,5 @@
-import type { ParsedCV, ExperienceEntry, EducationEntry, ProjectEntry, SkillCategory, GenericSection } from '../types/cv';
-import { wrapDocument } from './template';
+import type { ParsedCV, ExperienceEntry, EducationEntry, ProjectEntry, SkillCategory, GenericSection, SectionType } from '../types/cv';
+import { getTemplate, DEFAULT_SECTION_ORDER } from '../templates';
 import { escapeLatex, escapeLatexPreserveFormatting, formatEmail, formatPhone, formatLink, stripMarkdown } from './escapeLatex';
 
 function generateContactSection(cv: ParsedCV): string {
@@ -244,77 +244,58 @@ function generateGenericSection(section: GenericSection): string {
   return generateSimpleListSection(section.title, section.content);
 }
 
-export function generateLatex(cv: ParsedCV): string {
+function generateSectionContent(cv: ParsedCV, sectionType: SectionType): string {
+  switch (sectionType) {
+    case 'summary':
+      return cv.summary ? generateSummarySection(cv.summary) : '';
+    case 'skills':
+      return generateSkillsSection(cv.skills);
+    case 'experience':
+      return generateExperienceSection(cv.experience);
+    case 'projects':
+      return generateProjectsSection(cv.projects);
+    case 'education':
+      return generateEducationSection(cv.education);
+    case 'awards':
+      return generateAwardsSection('Achievements', cv.awards);
+    case 'certifications':
+      return generateSimpleListSection('Certifications', cv.certifications);
+    case 'publications':
+      return generateSimpleListSection('Publications', cv.publications);
+    case 'languages':
+      return generateSimpleListSection('Languages', cv.languages);
+    case 'interests':
+      return generateSimpleListSection('Interests', cv.interests);
+    default:
+      return '';
+  }
+}
+
+export function generateLatex(
+  cv: ParsedCV,
+  templateId: string = 'professional',
+  sectionOrder: SectionType[] = DEFAULT_SECTION_ORDER
+): string {
+  const template = getTemplate(templateId);
   const sections: string[] = [];
 
-  // Contact/Header section
+  // Contact/Header section is always first
   sections.push(generateContactSection(cv));
 
-  // Summary/Objective
-  if (cv.summary) {
-    sections.push('');
-    sections.push(generateSummarySection(cv.summary));
+  // Generate sections in the specified order
+  for (const sectionType of sectionOrder) {
+    const content = generateSectionContent(cv, sectionType);
+    if (content) {
+      sections.push('');
+      sections.push(content);
+    }
   }
 
-  // Skills (moved up per expected format)
-  if (cv.skills.length > 0) {
-    sections.push('');
-    sections.push(generateSkillsSection(cv.skills));
-  }
-
-  // Experience
-  if (cv.experience.length > 0) {
-    sections.push('');
-    sections.push(generateExperienceSection(cv.experience));
-  }
-
-  // Projects
-  if (cv.projects.length > 0) {
-    sections.push('');
-    sections.push(generateProjectsSection(cv.projects));
-  }
-
-  // Education
-  if (cv.education.length > 0) {
-    sections.push('');
-    sections.push(generateEducationSection(cv.education));
-  }
-
-  // Awards/Achievements (using special format)
-  if (cv.awards.length > 0) {
-    sections.push('');
-    sections.push(generateAwardsSection('Achievements', cv.awards));
-  }
-
-  // Certifications
-  if (cv.certifications.length > 0) {
-    sections.push('');
-    sections.push(generateSimpleListSection('Certifications', cv.certifications));
-  }
-
-  // Publications
-  if (cv.publications.length > 0) {
-    sections.push('');
-    sections.push(generateSimpleListSection('Publications', cv.publications));
-  }
-
-  // Languages
-  if (cv.languages.length > 0) {
-    sections.push('');
-    sections.push(generateSimpleListSection('Languages', cv.languages));
-  }
-
-  // Interests
-  if (cv.interests.length > 0) {
-    sections.push('');
-    sections.push(generateSimpleListSection('Interests', cv.interests));
-  }
-
-  // Generic sections
+  // Generic sections at the end
   for (const section of cv.genericSections) {
     sections.push('');
     sections.push(generateGenericSection(section));
   }
 
-  return wrapDocument(sections.join('\n'));
+  return template.preamble + sections.join('\n') + template.documentEnd;
 }

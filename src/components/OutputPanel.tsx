@@ -1,20 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import Prism from '../utils/prism-latex';
+import { PreviewPanel } from './PreviewPanel';
 
 interface OutputPanelProps {
   value: string;
   onClear: () => void;
 }
 
+type TabType = 'code' | 'preview';
+
 export function OutputPanel({ value, onClear }: OutputPanelProps) {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle');
+  const [activeTab, setActiveTab] = useState<TabType>('code');
   const codeRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (codeRef.current && value) {
+    if (codeRef.current && value && activeTab === 'code') {
       Prism.highlightElement(codeRef.current);
     }
-  }, [value]);
+  }, [value, activeTab]);
 
   const handleCopy = async () => {
     try {
@@ -42,7 +46,31 @@ export function OutputPanel({ value, onClear }: OutputPanelProps) {
   return (
     <div className="flex flex-col h-full min-h-0 overflow-hidden">
       <div className="flex-shrink-0 flex items-center justify-between mb-2">
-        <h2 className="text-base font-semibold text-gray-800 dark:text-gray-200">LaTeX Output</h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-base font-semibold text-gray-800 dark:text-gray-200">Output</h2>
+          <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
+            <button
+              onClick={() => setActiveTab('code')}
+              className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                activeTab === 'code'
+                  ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+              }`}
+            >
+              Code
+            </button>
+            <button
+              onClick={() => setActiveTab('preview')}
+              className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                activeTab === 'preview'
+                  ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
+              }`}
+            >
+              Preview
+            </button>
+          </div>
+        </div>
         <div className="flex items-center gap-1.5 flex-shrink-0">
           <button
             onClick={onClear}
@@ -76,36 +104,40 @@ export function OutputPanel({ value, onClear }: OutputPanelProps) {
       </div>
 
       <div className="flex-1 min-h-0 overflow-hidden rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900">
-        {value ? (
-          <pre className="h-full overflow-auto p-3 m-0 bg-transparent">
-            <code ref={codeRef} className="language-latex text-sm">
-              {value}
-            </code>
-          </pre>
-        ) : (
-          <div className="h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
-            <div className="text-center px-4">
-              <svg
-                className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <p className="text-sm">LaTeX output will appear here</p>
-              <p className="text-xs mt-1">Paste your CV and click "Convert to LaTeX"</p>
+        {activeTab === 'code' ? (
+          value ? (
+            <pre className="h-full overflow-auto p-3 m-0 bg-transparent">
+              <code ref={codeRef} className="language-latex text-sm">
+                {value}
+              </code>
+            </pre>
+          ) : (
+            <div className="h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
+              <div className="text-center px-4">
+                <svg
+                  className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                <p className="text-sm">LaTeX output will appear here</p>
+                <p className="text-xs mt-1">Paste your CV and click "Convert to LaTeX"</p>
+              </div>
             </div>
-          </div>
+          )
+        ) : (
+          <PreviewPanel latex={value} />
         )}
       </div>
 
-      {value && (
+      {value && activeTab === 'code' && (
         <div className="flex-shrink-0 mt-2 text-xs text-gray-500 dark:text-gray-400">
           {value.split('\n').length.toLocaleString()} lines
         </div>
