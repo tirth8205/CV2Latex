@@ -6,7 +6,6 @@ import type {
   ProjectEntry,
   SkillCategory,
   SectionType,
-  GenericSection,
 } from '../types/cv';
 
 // Common section header patterns
