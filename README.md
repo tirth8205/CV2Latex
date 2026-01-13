@@ -38,10 +38,10 @@ Convert your CV/resume from plain text or Markdown to professionally formatted L
 
 ```bash
 # Clone the repository
-git clone https://github.com/tirth8205/cv2latex.git
+git clone https://github.com/tirth8205/CV2Latex.git
 
 # Navigate to the project
-cd cv2latex
+cd CV2Latex
 
 # Install dependencies
 npm install

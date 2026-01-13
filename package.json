@@ -7,11 +7,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tirth8205/cv2latex.git"
+    "url": "https://github.com/tirth8205/CV2Latex.git"
   },
-  "homepage": "https://github.com/tirth8205/cv2latex#readme",
+  "homepage": "https://github.com/tirth8205/CV2Latex#readme",
   "bugs": {
-    "url": "https://github.com/tirth8205/cv2latex/issues"
+    "url": "https://github.com/tirth8205/CV2Latex/issues"
   },
   "keywords": [
     "cv",
