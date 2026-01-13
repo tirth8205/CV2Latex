@@ -90,48 +90,125 @@ export function PreviewPanel({ latex }: PreviewPanelProps) {
   }
 
   return (
-    <div className="h-full overflow-auto">
+    <div className="h-full overflow-auto bg-white">
       <div
-        className="preview-content p-6 bg-white min-h-full"
-        style={{
-          fontFamily: 'serif',
-          fontSize: '11pt',
-          lineHeight: '1.4',
-        }}
+        className="preview-content p-8 max-w-[8.5in] mx-auto"
         dangerouslySetInnerHTML={{ __html: html || '' }}
       />
       <style>{`
-        .preview-content h1 {
-          font-size: 1.5em;
+        .preview-content {
+          font-family: 'Times New Roman', Times, serif;
+          font-size: 11pt;
+          line-height: 1.3;
+          color: #000;
+        }
+
+        .cv-preview {
+          padding: 0.5in 0;
+        }
+
+        .cv-name {
+          font-size: 24pt;
           font-weight: bold;
           text-align: center;
-          margin-bottom: 0.5em;
+          margin-bottom: 8px;
         }
-        .preview-content h2 {
-          font-size: 1.2em;
+
+        .cv-center {
+          text-align: center;
+          margin-bottom: 12px;
+        }
+
+        .cv-section {
+          font-size: 12pt;
           font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
           border-bottom: 1px solid #000;
           padding-bottom: 2px;
-          margin-top: 1em;
-          margin-bottom: 0.5em;
+          margin-top: 16px;
+          margin-bottom: 8px;
         }
-        .preview-content ul {
-          list-style: disc;
-          margin-left: 1.5em;
-          margin-bottom: 0.5em;
+
+        .cv-list {
+          margin: 0;
+          padding: 0;
         }
-        .preview-content li {
-          margin-bottom: 0.25em;
+
+        .cv-entry {
+          margin-bottom: 8px;
         }
-        .preview-content p {
-          margin-bottom: 0.5em;
+
+        .cv-entry-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          flex-wrap: wrap;
+          gap: 8px;
         }
-        .preview-content .center {
-          text-align: center;
+
+        .cv-entry-title {
+          font-weight: bold;
         }
+
+        .cv-entry-date {
+          font-size: 10pt;
+          color: #333;
+        }
+
+        .cv-entry-subheader {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          flex-wrap: wrap;
+          gap: 8px;
+          font-style: italic;
+          font-size: 10pt;
+        }
+
+        .cv-entry-subtitle {
+          font-style: italic;
+        }
+
+        .cv-entry-location {
+          color: #333;
+        }
+
+        .cv-items {
+          margin: 4px 0 8px 20px;
+          padding: 0;
+          list-style-type: disc;
+        }
+
+        .cv-items li {
+          margin-bottom: 2px;
+          text-align: justify;
+        }
+
+        .cv-vspace {
+          height: 8px;
+        }
+
+        .cv-hfill {
+          flex: 1;
+        }
+
         .preview-content a {
-          color: inherit;
+          color: #000;
           text-decoration: underline;
+        }
+
+        .preview-content code {
+          font-family: 'Courier New', monospace;
+          font-size: 10pt;
+        }
+
+        .preview-content strong {
+          font-weight: bold;
+        }
+
+        .preview-content em {
+          font-style: italic;
         }
       `}</style>
     </div>
