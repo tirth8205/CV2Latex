@@ -14,8 +14,10 @@ Try it now: **[https://tirth8205.github.io/CV2Latex/](https://tirth8205.github.i
 ## Features
 
 - **Instant Conversion**: Paste your CV and get LaTeX code immediately
+- **Multiple Templates**: Choose from Professional, Modern, or Academic styles
+- **Section Reordering**: Drag-and-drop to customize section order
+- **Live Preview**: See a rendered preview of your CV alongside the LaTeX code
 - **Markdown Support**: Use `**bold**` and `[links](url)` formatting
-- **Professional Template**: Uses a clean, ATS-friendly resume template
 - **100% Content Fidelity**: All your original content is preserved exactly
 - **Syntax Highlighting**: LaTeX output is highlighted for easy reading
 - **Copy & Download**: One-click copy to clipboard or download as `.tex` file
@@ -25,6 +27,14 @@ Try it now: **[https://tirth8205.github.io/CV2Latex/](https://tirth8205.github.i
 - **Sample CV**: Load a sample CV to see how it works
 - **Keyboard Shortcut**: Press `Ctrl+Enter` (or `Cmd+Enter` on Mac) to convert
 - **Parsing Feedback**: Get helpful tips and warnings about your CV structure
+
+## Templates
+
+| Template | Description |
+|----------|-------------|
+| **Professional** | Clean, traditional design with Computer Modern font. Best for corporate roles. |
+| **Modern** | Sans-serif Helvetica with subtle color accents. Great for tech and startups. |
+| **Academic** | Palatino font with wider margins. Ideal for academic and research positions. |
 
 ## Supported Sections
 
@@ -73,15 +83,27 @@ npm run build
 
 The built files will be in the `dist/` directory.
 
+### Run Tests
+
+```bash
+# Run tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+```
+
 ## Usage
 
 1. **Paste your CV** in the left panel (plain text or Markdown format)
    - Or click **"Sample"** to load an example CV
    - Or click **"Upload"** to load a `.txt` or `.md` file
-2. **Click "Convert to LaTeX"** button (or press `Ctrl+Enter`)
-3. **Review** any parsing feedback or suggestions
-4. **Copy or Download** the generated LaTeX code
-5. **Compile** the `.tex` file using pdflatex or any LaTeX editor (Overleaf, TeXShop, etc.)
+2. **Select a template** from the dropdown (Professional, Modern, or Academic)
+3. **Click "Convert to LaTeX"** button (or press `Ctrl+Enter`)
+4. **Reorder sections** (optional) - click the Reorder button to drag-and-drop sections
+5. **Preview** - switch to the Preview tab to see a rendered version
+6. **Copy or Download** the generated LaTeX code
+7. **Compile** the `.tex` file using pdflatex or any LaTeX editor (Overleaf, TeXShop, etc.)
 
 ### Input Format Example
 
@@ -139,42 +161,66 @@ Becomes:
 - **Vite** - Build tool
 - **Tailwind CSS** - Styling
 - **Prism.js** - Syntax highlighting
+- **@dnd-kit** - Drag-and-drop functionality
+- **Vitest** - Unit testing
 
-## LaTeX Template
+## LaTeX Templates
 
-The generated LaTeX uses a professional resume template with custom commands:
+The app includes three professionally designed templates:
 
-- `\resumeSubheading{Company}{Date}{Position}{Location}`
-- `\resumeItem{Description}`
-- `\resumeProjectHeading{Project Details}{}`
+### Professional (Default)
+- Computer Modern font at 11pt
+- 0.5in margins
+- Rule underlines for section headers
+- Classic, ATS-friendly design
 
-The template is ATS-friendly and compiles with standard pdflatex.
+### Modern
+- Helvetica font at 10pt
+- 0.6in margins
+- Colored section headers
+- Contemporary look for tech roles
+
+### Academic
+- Palatino font at 12pt
+- 1in margins
+- Small caps section headers
+- Traditional academic styling
 
 ## Project Structure
 
 ```
 cv2latex/
 ├── src/
-│   ├── components/       # React components
+│   ├── components/          # React components
 │   │   ├── InputPanel.tsx
-│   │   └── OutputPanel.tsx
-│   ├── hooks/            # Custom React hooks
+│   │   ├── OutputPanel.tsx
+│   │   ├── PreviewPanel.tsx
+│   │   ├── TemplateSelector.tsx
+│   │   └── SectionOrderModal.tsx
+│   ├── hooks/               # Custom React hooks
 │   │   ├── useLocalStorage.ts
-│   │   └── useTheme.ts
-│   ├── utils/            # Core logic
-│   │   ├── parser.ts     # CV parsing
+│   │   ├── useTheme.ts
+│   │   └── useLatexPreview.ts
+│   ├── utils/               # Core logic
+│   │   ├── parser.ts        # CV parsing
+│   │   ├── parser.test.ts   # Parser unit tests
 │   │   ├── latexGenerator.ts
-│   │   ├── escapeLatex.ts
-│   │   └── template.ts   # LaTeX preamble
+│   │   └── escapeLatex.ts
+│   ├── templates/           # LaTeX templates
+│   │   ├── index.ts
+│   │   ├── professional.ts
+│   │   ├── modern.ts
+│   │   └── academic.ts
 │   ├── data/
-│   │   └── sampleCV.ts   # Sample CV content
+│   │   └── sampleCV.ts      # Sample CV content
 │   ├── types/
-│   │   └── cv.ts         # TypeScript interfaces
+│   │   └── cv.ts            # TypeScript interfaces
 │   ├── App.tsx
 │   └── main.tsx
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml    # GitHub Actions deployment
+│       └── deploy.yml       # GitHub Actions deployment
+├── vitest.config.ts         # Test configuration
 ├── index.html
 ├── package.json
 ├── vite.config.ts
@@ -210,4 +256,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - LaTeX resume template inspired by [Jake's Resume](https://github.com/jakegut/resume)
 - Built with React and Vite
-
