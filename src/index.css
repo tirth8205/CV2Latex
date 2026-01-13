@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Custom scrollbar for textareas */
+textarea::-webkit-scrollbar,
+pre::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea::-webkit-scrollbar-track,
+pre::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover,
+pre::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Prism.js LaTeX syntax highlighting */
+code[class*="language-latex"],
+pre[class*="language-latex"] {
+  color: #24292e;
+  background: none;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 13px;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  tab-size: 2;
+  hyphens: none;
+}
+
+pre[class*="language-latex"] {
+  padding: 1rem;
+  margin: 0;
+  overflow: auto;
+  border-radius: 0.5rem;
+  background: #f6f8fa;
+}
+
+/* LaTeX tokens */
+.token.command { color: #005cc5; }
+.token.keyword { color: #d73a49; }
+.token.function { color: #6f42c1; }
+.token.string { color: #032f62; }
+.token.comment { color: #6a737d; font-style: italic; }
+.token.punctuation { color: #24292e; }
+.token.number { color: #005cc5; }
+.token.operator { color: #d73a49; }
