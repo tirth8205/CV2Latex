@@ -102,6 +102,14 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleConvert]);
 
+  // Auto-regenerate when template or section order changes (only if already converted)
+  useEffect(() => {
+    if (lastParsedCV && output) {
+      const latex = generateLatex(lastParsedCV, templateId, sectionOrder);
+      setOutput(latex);
+    }
+  }, [templateId, sectionOrder]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleClearInput = () => {
     setInput('');
     setError(null);
