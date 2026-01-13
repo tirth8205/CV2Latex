@@ -210,3 +210,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - LaTeX resume template inspired by [Jake's Resume](https://github.com/jakegut/resume)
 - Built with React and Vite
+
